@@ -4,6 +4,7 @@ const tabelas = require("./infraestrutura/tabelas");
 
 const porta = process.env.PORT || 3000;
 
+
 conexao.connect((erro) => {
     if(erro) {
         console.log("|| ERRO AO SE CONECTAR COM A BANCO DE DADOS.");
