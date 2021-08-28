@@ -2,7 +2,7 @@ const customExpress = require("./config/customExpress");
 const conexao = require("./infraestrutura/conexao");
 const tabelas = require("./infraestrutura/tabelas");
 
-const porta = process.env.PORT || 3000;
+const porta = process.env.PORT || 8080;
 
 
 conexao.connect((erro) => {
