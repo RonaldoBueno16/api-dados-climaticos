@@ -1,14 +1,8 @@
 {
-  "name": "websocket-nodejs",
+  "name": "api-dados-climaticos",
   "version": "1.0.0",
-  "description": "",
+  "description": "API de dados climaticos",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Ronaldo Bueno",
-  "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
     "consign": "^0.1.6",
@@ -17,7 +11,19 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.3.0"
   },
-  "devDependencies": {
-    "nodemon": "^2.0.12"
-  }
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RonaldoBueno16/api-dados-climaticos.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RonaldoBueno16/api-dados-climaticos/issues"
+  },
+  "homepage": "https://github.com/RonaldoBueno16/api-dados-climaticos#readme"
 }
