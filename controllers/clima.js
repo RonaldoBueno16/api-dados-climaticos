@@ -9,6 +9,9 @@ module.exports = app => {
     app.get('/coletardados/:esp_id', (req, res) => {
         clima.coletarDadosESP(req.params.esp_id, res);
     })
+    app.get('/coletardadosmax', (req, res) => {
+        clima.coletarDadosMax(res);
+    })
     app.get("/", (req, res) => {
         res.json({
             msg: 'OK'

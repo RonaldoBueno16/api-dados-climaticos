@@ -72,6 +72,19 @@ class clima {
             }
         });
     }
+
+    coletarDadosMax(res) {
+        const sql = "SELECT *, MAX(datadoregistro) AS data FROM dados_climaticos GROUP BY esp_id;";
+
+        conexao.query(sql, (erro, sucess) => {
+            if(erro) {
+                res.status(400).json(erro);
+            }
+            else {
+                res.status(200).json(sucess);
+            }
+        });
+    }
 }
 
 module.exports = new clima;
