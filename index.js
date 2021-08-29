@@ -1,11 +1,11 @@
 const customExpress = require("./config/customExpress");
-const conexao = require("./infraestrutura/conexao");
+let conexao = require("./infraestrutura/conexao");
 const tabelas = require("./infraestrutura/tabelas");
 
 const porta = process.env.PORT || 8080;
 
 
-conexao.connect((erro) => {
+/*conexao.connect((erro) => {
     if(erro) {
         console.log("|| ERRO AO SE CONECTAR COM A BANCO DE DADOS.");
         console.log(erro);
@@ -20,4 +20,23 @@ conexao.connect((erro) => {
             console.log("|| Servidor rodando na porta " + porta);
         });
     }
-});
+});*/
+
+conexao.getConnection((err, connection) => {
+    conexao = connection;
+    
+    if(err) {
+        console.log("|| ERRO AO SE CONECTAR COM A BANCO DE DADOS.");
+        console.log(err);
+    }
+    else {
+        console.log("\n|| CONEXÃO ESTABELECIDA COM A BANCO DE DADOS ||\n");
+
+        tabelas.init(conexao);
+        
+        const app = customExpress();
+        app.listen(porta, () => {
+            console.log("|| Servidor rodando na porta " + porta);
+        });
+    }
+})

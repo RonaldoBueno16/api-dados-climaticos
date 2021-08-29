@@ -8,5 +8,4 @@ const conexao = mysql.createPool({
     database: 'heroku_9981c230de2b387'
 })
 
-
 module.exports = conexao;
