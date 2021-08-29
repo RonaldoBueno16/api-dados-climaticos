@@ -19,14 +19,13 @@ conexao.getConnection((err, connection) => {
         
         const app = customExpress();
         app.use(cors());
-
-        app.use((req, res, next) => {
-            console.log("Acessou o midware");
-            next();
-        })
         
         app.listen(porta, () => {
             console.log("|| Servidor rodando na porta " + porta + "com as configurações CORS ativadas");
         });
+
+        app.use((req, res) => {
+            console.log("Acessou o midware");
+        })
     }
 })
