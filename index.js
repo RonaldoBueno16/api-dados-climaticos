@@ -1,6 +1,7 @@
 const customExpress = require("./config/customExpress");
 let conexao = require("./infraestrutura/conexao");
 const tabelas = require("./infraestrutura/tabelas");
+const cors = require("cors");
 
 const porta = process.env.PORT || 8080;
 
@@ -17,8 +18,9 @@ conexao.getConnection((err, connection) => {
         tabelas.init(conexao);
         
         const app = customExpress();
+        app.use(cors());
         app.listen(porta, () => {
-            console.log("|| Servidor rodando na porta " + porta);
+            console.log("|| Servidor rodando na porta " + porta + "com as configurações CORS ativadas");
         });
     }
 })
