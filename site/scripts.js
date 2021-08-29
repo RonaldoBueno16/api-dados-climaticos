@@ -60,7 +60,7 @@ $("#searchone").on("click", () => {
             url: "https://api-dados-climaticos.herokuapp.com/coletardados/"+esp_id,
 
             success: (data) => {
-                console.log(data);
+                montarTabela(data);
             },
             error: (err) => {
                 console.log(err);
@@ -74,10 +74,82 @@ $("#searchmax").on("click", () => {
         url: "https://api-dados-climaticos.herokuapp.com/coletardadosmax",
 
         success: (data) => {
-            console.log(data);
+            montarTabela(data);
         },
         error: (err) => {
             console.log(err);
         }
     })
 })
+$("#searchall").on("click", () => {
+    $.ajax({
+        method: "GET",
+        url: "https://api-dados-climaticos.herokuapp.com/coletardadostodos",
+
+        success: (data) => {
+            montarTabela(data);
+        },
+        error: (err) => {
+            console.log(err);
+        }
+    })
+})
+
+function montarTabela(dados) {
+    const tabelaExistente = $("table > tbody > tr");
+    tabelaExistente.each((index, element) => {
+        console.log(element.remove());
+    })
+    
+    const tabela = $("table > tbody")[0];
+    let tr_element;
+    let td;
+    dados.forEach((index) => {
+        console.log(index);
+
+        tr_element = document.createElement("tr");
+        tabela.appendChild(tr_element);
+
+        //ID
+        td = document.createElement("th");
+        tr_element.appendChild(td);
+        td.textContent = index.id;
+
+        //Data
+        td = document.createElement("td");
+        tr_element.appendChild(td);
+        td.textContent = index.datadoregistro;
+
+        //Nome
+        td = document.createElement("td");
+        tr_element.appendChild(td);
+        td.textContent = index.esp_id;
+
+        //Umidade
+        td = document.createElement("td");
+        tr_element.appendChild(td);
+        td.textContent = index.umidade;
+
+        //Temperatura
+        td = document.createElement("td");
+        tr_element.appendChild(td);
+        td.textContent = index.temperatura;
+
+        //Pressão atmosférica
+        td = document.createElement("td");
+        tr_element.appendChild(td);
+        td.textContent = index.pressao_atmosferica;
+
+        //Latitude
+        td = document.createElement("td");
+        tr_element.appendChild(td);
+        td.textContent = index.latitude;
+
+        //Latitude
+        td = document.createElement("td");
+        tr_element.appendChild(td);
+        td.textContent = index.longitude;
+    })
+    
+
+}

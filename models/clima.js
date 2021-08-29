@@ -90,7 +90,7 @@ class clima {
     }
     
     coletarDadosAll(res) {
-        const sql = "SELECT * FROM dados_climaticos ORDER BY datadoregistro DESC;";
+        const sql = "SELECT * FROM dados_climaticos ORDER BY id ASC;";
 
         conexao.query(sql, (erro, sucess) => {
             if(erro) {
