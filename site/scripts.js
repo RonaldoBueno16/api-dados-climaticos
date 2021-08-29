@@ -30,8 +30,8 @@ $("#enviar").on("click", () => {
 
     $.ajax({
         method: 'POST',
-        url: 'http://mighty-cove-12032.herokuapp.com/http://api-dados-climaticos.herokuapp.com/inserirdados/',
-        contentType: "application/JSON",
+        url: 'https://api-dados-climaticos.herokuapp.com/inserirdados',
+        dataType: "application/JSON",
         data: {
             "esp_id": esp_id,
             "umidade": umidade,
@@ -42,13 +42,42 @@ $("#enviar").on("click", () => {
             "longitude": longitude
         },
 
-        sucess: (response) => {
-            console.log("sucesso");
-            console.log(response);
+        error: (response) => {
+            if(response.status == 200) {
+                alert("Inserido com sucesso! Codigo do registro: " + response.responseText);   
+            }
         },
-        error: (error) => {
-            console.log("erro");
-            console.log(error);
+    })
+})
+$("#searchone").on("click", () => {
+    const esp_id = $("#espnameone")[0].value;
+    if(esp_id == "") {
+        alert("Você precisa definir qual ESP você deseja procurar");
+    }
+    else {
+        $.ajax({
+            method: "GET",
+            url: "https://api-dados-climaticos.herokuapp.com/coletardados/"+esp_id,
+
+            success: (data) => {
+                console.log(data);
+            },
+            error: (err) => {
+                console.log(err);
+            }
+        })
+    }
+})
+$("#searchmax").on("click", () => {
+    $.ajax({
+        method: "GET",
+        url: "https://api-dados-climaticos.herokuapp.com/coletardadosmax",
+
+        success: (data) => {
+            console.log(data);
+        },
+        error: (err) => {
+            console.log(err);
         }
     })
 })

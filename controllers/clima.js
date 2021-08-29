@@ -12,9 +12,12 @@ module.exports = app => {
     app.get('/coletardadosmax', (req, res) => {
         clima.coletarDadosMax(res);
     })
+    app.get('/coletardadostodos', (req, res) => {
+        clima.coletarDadosAll(res);
+    })
     app.get("/", (req, res) => {
         res.json({
-            msg: 'OK'
+            msg: 'API rodando...'
         })
     })
 }

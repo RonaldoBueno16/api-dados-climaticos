@@ -88,6 +88,19 @@ class clima {
             }
         });
     }
+    
+    coletarDadosAll(res) {
+        const sql = "SELECT * FROM dados_climaticos ORDER BY datadoregistro DESC;";
+
+        conexao.query(sql, (erro, sucess) => {
+            if(erro) {
+                res.status(400).json(erro);
+            }
+            else {
+                res.status(200).json(sucess);
+            }
+        });
+    }
 }
 
 module.exports = new clima;

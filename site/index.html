@@ -8,42 +8,85 @@
     </head>
     <body>
         <h1 style="text-align: center; margin-top: 20px;">Enviar dados para o servidor</h1>
-        
-        <form style="margin: 100px 200px 0px 200px;">
-            <div class="form-group">
-              <label for="espname">Nome do ESP</label>
-              <input type="text" style="width: 30%;" class="form-control" id="espname" placeholder="Nome">
-            </div>
-            <div class="form-group">
-                <label for="umidade">Umidade</label>
-                <input type="text" style="width: 30%;" class="form-control" id="umidade" placeholder="Valor">
-            </div>
-            <div class="form-group">
-                <label for="temperatura">Temperatura</label>
-                <input type="text" style="width: 30%;" class="form-control" id="temperatura" placeholder="Valor">
-            </div>
-            <div class="form-group">
-                <label for="pressao_atmosferica">Pressão Atmosférica</label>
-                <input type="text" style="width: 30%;" class="form-control" id="pressao_atmosferica" placeholder="Valor">
-            </div>
-            <div class="form-group">
-                <label for="latitude">Latitude</label>
-                <input type="text" style="width: 30%;" class="form-control" id="latitude" placeholder="Valor">
-            </div>
-            <div class="form-group">
-                <label for="longitude">Longitude</label>
-                <input type="text" style="width: 30%;" class="form-control" id="longitude" placeholder="Valor">
-            </div>
-            <div class="form-group">
-                <label for="chovendo">Chovendo?</label>
-                <select class="form-select" id="chovendo" aria-label="Está chovendo?">
-                    <option value="-1"></option>
-                    <option value="0">Não</option>
-                    <option value="1">Sim</option>
-                </select>
-            </div>
-            <button type="button" id="enviar" class="btn btn-primary">Enviar</button>
-        </form>
+        <div>
+            <form style="margin: 50px 200px 100px 800px;">
+                <div class="form-group">
+                <label for="espname">Nome do ESP</label>
+                <input type="text" style="width: 30%;" class="form-control" id="espname" placeholder="Nome">
+                </div>
+                <div class="form-group">
+                    <label for="umidade">Umidade</label>
+                    <input type="text" style="width: 30%;" class="form-control" id="umidade" placeholder="Valor">
+                </div>
+                <div class="form-group">
+                    <label for="temperatura">Temperatura</label>
+                    <input type="text" style="width: 30%;" class="form-control" id="temperatura" placeholder="Valor">
+                </div>
+                <div class="form-group">
+                    <label for="pressao_atmosferica">Pressão Atmosférica</label>
+                    <input type="text" style="width: 30%;" class="form-control" id="pressao_atmosferica" placeholder="Valor">
+                </div>
+                <div class="form-group">
+                    <label for="latitude">Latitude</label>
+                    <input type="text" style="width: 30%;" class="form-control" id="latitude" placeholder="Valor">
+                </div>
+                <div class="form-group">
+                    <label for="longitude">Longitude</label>
+                    <input type="text" style="width: 30%;" class="form-control" id="longitude" placeholder="Valor">
+                </div>
+                <div class="form-group">
+                    <label for="chovendo">Chovendo?</label>
+                    <select class="form-select" id="chovendo" aria-label="Está chovendo?">
+                        <option value="-1"></option>
+                        <option value="0">Não</option>
+                        <option value="1">Sim</option>
+                    </select>
+                </div>
+                <button type="button" id="enviar" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+        <h1 style="text-align: center; margin-top: 20px;">Buscar dados do servidor</h1>
+        <div>
+            <form style="margin: 10px 200px 0px 800px;">
+                <div class="form-group">
+                    <label for="espnameone">Nome do ESP</label>
+                    <input type="text" style="width: 30%;" class="form-control" id="espnameone" placeholder="Nome">
+                </div>
+                <div style="margin-left: -120px;">
+                    <button type="button" id="searchone" class="btn btn-primary">Pesquisar</button>
+                    <button type="button" id="searchmax" class="btn btn-secondary">Lista dos ultimos registros de cada ESP</button>
+                    <button type="button" id="searchall" class="btn btn-success">Listar todos</button>
+                    
+                </div>
+            </form>
+
+            <table class="table" style="text-align: center; width: 75%; margin-left: 200px; margin-top: 50px;">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Data do registro</th>
+                    <th scope="col">Nome do controlador</th>
+                    <th scope="col">Umidade</th>
+                    <th scope="col">Temperatura</th>
+                    <th scope="col">Pressão Atmosférica</th>
+                    <th scope="col">Latitude</th>
+                    <th scope="col">Longitude</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row"></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+        </div>
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
