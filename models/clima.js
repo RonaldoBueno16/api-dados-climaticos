@@ -3,6 +3,9 @@ const conexao = require("../infraestrutura/conexao")
 
 class clima {
     adicionar(objeto, res) {
+        console.log("Objeto a adicionar:");
+        console.log(objeto);
+        
         const validacoes = [
             {
                 nome: "Umidade",

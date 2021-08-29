@@ -30,7 +30,7 @@ $("#enviar").on("click", () => {
 
     $.ajax({
         method: 'POST',
-        url: 'http://api-dados-climaticos.herokuapp.com/inserirdados/',
+        url: 'http://mighty-cove-12032.herokuapp.com/http://api-dados-climaticos.herokuapp.com/inserirdados/',
         contentType: "application/JSON",
         data: {
             "esp_id": esp_id,
