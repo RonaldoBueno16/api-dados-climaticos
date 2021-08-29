@@ -64,7 +64,7 @@ class clima {
     }
 
     coletarDadosESP(espname, res) {
-        const sql = `SELECT * FROM dados_climaticos WHERE esp_id='${espname}' ORDER BY datadoregistro DESC`;
+        const sql = `SELECT * FROM dados_climaticos WHERE esp_id='${espname}' ORDER BY id ASC`;
 
         conexao.query(sql, (erro, sucess) => {
             if(erro) {
@@ -77,7 +77,7 @@ class clima {
     }
 
     coletarDadosMax(res) {
-        const sql = "SELECT *, MAX(datadoregistro) AS data FROM dados_climaticos GROUP BY esp_id;";
+        const sql = "SELECT *, MAX(datadoregistro) AS data FROM dados_climaticos GROUP BY esp_id ORDER BY id ASC;";
 
         conexao.query(sql, (erro, sucess) => {
             if(erro) {
