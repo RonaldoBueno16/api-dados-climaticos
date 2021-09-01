@@ -3,9 +3,6 @@ const conexao = require("../infraestrutura/conexao")
 
 class clima {
     adicionar(objeto, res) {
-        console.log("Objeto a adicionar:");
-        console.log(objeto);
-        
         const validacoes = [
             {
                 nome: "Umidade",
@@ -77,7 +74,7 @@ class clima {
     }
 
     coletarDadosMax(res) {
-        const sql = "SELECT *, MAX(datadoregistro) AS data FROM dados_climaticos GROUP BY esp_id ORDER BY id ASC;";
+        const sql = "SELECT * FROM dados_climaticos a WHERE a.datadoregistro = (SELECT MAX(datadoregistro) FROM dados_climaticos b WHERE a.esp_id=b.esp_id) GROUP BY esp_id ";
 
         conexao.query(sql, (erro, sucess) => {
             if(erro) {

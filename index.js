@@ -21,11 +21,7 @@ conexao.getConnection((err, connection) => {
         app.use(cors());
         
         app.listen(porta, () => {
-            console.log("|| Servidor rodando na porta " + porta + "com as configurações CORS ativadas");
+            console.log("|| Servidor rodando na porta " + porta + " com as configurações CORS ativadas");
         });
-
-        app.use((req, res) => {
-            console.log("Acessou o midware");
-        })
     }
 })
