@@ -5,15 +5,27 @@ class tabelas {
         this.estruturarDB();
     }
 
+    
+    
+    
     estruturarDB() {
-        const sql = "CREATE TABLE IF NOT EXISTS `dados_climaticos` (`id` INT(10) NOT NULL AUTO_INCREMENT,`esp_id` VARCHAR(50) NOT NULL COLLATE 'latin1_bin',`datadoregistro` DATETIME NULL DEFAULT NULL,`umidade` INT(10) NOT NULL DEFAULT '0',`temperatura` INT(10) NOT NULL DEFAULT '0',`pressao_atmosferica` INT(10) NOT NULL DEFAULT '0',`esta_chovendo` INT(10) NOT NULL DEFAULT '0',`latitude` FLOAT NOT NULL DEFAULT '0',`longitude` FLOAT NOT NULL DEFAULT '0',PRIMARY KEY (`id`));";        
-        
+        let sql = "CREATE TABLE IF NOT EXISTS `dados_climaticos` (`reg_index` INT(10) NOT NULL AUTO_INCREMENT,`esp_index` INT(11) NOT NULL DEFAULT '0',`datadoregistro` DATETIME NULL DEFAULT NULL,`umidade` INT(10) NOT NULL DEFAULT '0',`temperatura` INT(10) NOT NULL DEFAULT '0',`luminosidade` INT(10) NOT NULL DEFAULT '0',`pressao` INT(10) NOT NULL DEFAULT '0',`altitude` INT(11) NOT NULL DEFAULT '0',`chuva` INT(11) NOT NULL DEFAULT '0',PRIMARY KEY (`reg_index`));";
+
         this.conexao.query(sql, (erro) => {
             if(erro) {
                 console.log(erro);
             }
             else {
-                console.log("|| Banco de dados estruturado e pronto para uso.")
+                sql = "CREATE TABLE IF NOT EXISTS `lista_esps` (`esp_index` INT(11) NOT NULL AUTO_INCREMENT,`esp_nome` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_bin',`esp_auth` TEXT NOT NULL COLLATE 'latin1_bin',PRIMARY KEY (`esp_index`));";
+
+                this.conexao.query(sql, (erro) => {
+                    if(erro) {
+                        console.log(erro);
+                    }
+                    else {
+                        console.log("Tabelas estruturadas")
+                    }
+                });
             }
         });
     }

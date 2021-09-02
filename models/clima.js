@@ -1,103 +1,151 @@
+
+const { type } = require("jquery");
 const moment = require("moment");
 const conexao = require("../infraestrutura/conexao")
+
+
 
 class clima {
     adicionar(objeto, res) {
         const validacoes = [
+            {//Verificar autenticação
+                nome: "Autenticação",
+                validacao: objeto.esp_key,
+                message: "Chave de autenticação não informada"
+            },
+            //Verificar sensores
             {
-                nome: "Umidade",
-                validacao: objeto.umidade,
-                message: "Você precisa enviar os dados sobre a umidade do ar (umidade)."
+                nome: "Sensor de umidade",
+                validacao: objeto.sensors.umidade,
+                message: "Dados do sensor de umidade não informado"
             },
             {
-                nome: "Temperatura",
-                validacao: objeto.temperatura,
-                message: "Você precisa enviar os dados sobre a temperatura (temperatura)"
+                nome: "Sensor de temperatura",
+                validacao: objeto.sensors.temperatura,
+                message: "Dados do sensor de temperatura não informado"
             },
             {
-                nome: "Pressão atmosférica",
-                validacao: objeto.pressao_atmosferica,
-                message: "Você precisa enviar os dados sobre a pressão atmosférica (pressao_atmosferica)"
+                nome: "Sensor de luminosidade",
+                validacao: objeto.sensors.luminosidade,
+                message: "Dados do sensor de luminosidade não informado"
             },
             {
-                nome: "Verificar chuva",
-                validacao: objeto.esta_chovendo,
-                message: "Você precisa informar se está chovendo (esta_chovendo)"
+                nome: "Sensor de pressao",
+                validacao: objeto.sensors.pressao,
+                message: "Dados do sensor de pressao não informado"
             },
             {
-                nome: "Verificar latitude",
-                validacao: objeto.latitude,
-                message: "Você precisa informar a latitude do local (latitude)"
+                nome: "Sensor de altitude",
+                validacao: objeto.sensors.altitude,
+                message: "Dados do sensor de altitude não informado"
             },
             {
-                nome: "Verificar longitude",
-                validacao: objeto.longitude,
-                message: "Você precisa informar a longitude do local (longitude)"
-            },
-            {
-                nome: "Verificar nome do microcontrolador",
-                validacao: objeto.esp_id,
-                message: "Você precisa o ID do microcontrolador (esp_id)"
+                nome: "Sensor de chuva",
+                validacao: objeto.sensors.chuva,
+                message: "Dados do sensor de chuva não informado"
             }
         ]
 
         const erros = validacoes.filter(campos => campos.validacao == null);
         if(erros.length) {
-            res.status(400).json(erros);
+            res.status(400).json(GenerateJsonError("authentication_failure", "Falha na chave de autenticação"));
         }
         else {
-
-            const sql = `INSERT INTO dados_climaticos(datadoregistro, esp_id, umidade, temperatura, pressao_atmosferica, esta_chovendo, latitude, longitude) VALUES('${moment(new Date()).format("YYYY-MM-DD HH:mm:ss")}', '${objeto.esp_id}', ${objeto.umidade}, ${objeto.temperatura}, ${objeto.pressao_atmosferica}, ${objeto.esta_chovendo}, ${objeto.latitude}, ${objeto.longitude});`;
-            conexao.query(sql, (erro, resultado) => {
+            //Verificar autenticação
+            let sql = `SELECT esp_index FROM lista_esps a WHERE a.esp_auth='${objeto.esp_key}';`
+            conexao.query(sql, (erro, sucess) => {
                 if(erro) {
+                    res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
                     console.log(erro);
                 }
                 else {
-                    res.status(200).json(resultado.insertId);
-                    console.log("Registro criado com sucesso! ID: " + resultado.insertId);
+                    if(sucess.length == 0) {
+                        res.status(400).json(GenerateJsonError("authentication_failure", "Falha na chave de autenticação"));
+                    }
+                    else {
+                        const esp_index = sucess[0].esp_index
+
+
+                        sql = `INSERT INTO dados_climaticos(esp_index,datadoregistro,umidade,temperatura,luminosidade,pressao,altitude,chuva) VALUES(${esp_index},'${moment(new Date()).format("YYYY-MM-DD HH:mm:ss")}', ${objeto.sensors.umidade}, ${objeto.sensors.temperatura}, ${objeto.sensors.luminosidade}, ${objeto.sensors.pressao}, ${objeto.sensors.altitude}, ${objeto.sensors.chuva})`
+                        conexao.query(sql, (erro, sucess) => {
+                            if(erro) {
+                                res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
+                                console.log(erro);
+                            }
+                            else {
+                                res.status(200).json(GenerateJsonSucess("registro inserido com sucesso", {insertId: sucess.insertId}))
+                            }
+                        })
+                    }
                 }
             })
         }
     }
 
-    coletarDadosESP(espname, res) {
-        const sql = `SELECT * FROM dados_climaticos WHERE esp_id='${espname}' ORDER BY id ASC`;
-
-        conexao.query(sql, (erro, sucess) => {
+    vincularEsp(objeto, res) {
+        
+    }
+    
+    coletarDadosESP(auth_key, res) {
+        const sql = `SELECT * FROM dados_climaticos WHEREa esp_index = (SELECT esp_index FROM lista_esps WHERE esp_auth='${auth_key}');`
+        
+        conexao.query(sql, (erro, sucesso) => {
             if(erro) {
-                res.status(400).json(erro);
+                res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
+                console.log(erro);
             }
             else {
-                res.status(200).json(sucess);
+                res.status(200).json(GenerateJsonSucess("OK",sucesso));
             }
         });
     }
 
     coletarDadosMax(res) {
-        const sql = "SELECT * FROM dados_climaticos a WHERE a.datadoregistro = (SELECT MAX(datadoregistro) FROM dados_climaticos b WHERE a.esp_id=b.esp_id) GROUP BY esp_id ";
+        const sql = "SELECT * FROM dados_climaticos a WHERE a.datadoregistro = (SELECT MAX(datadoregistro) FROM dados_climaticos b WHERE a.esp_index=b.esp_index) GROUP BY esp_index;";
 
         conexao.query(sql, (erro, sucess) => {
             if(erro) {
-                res.status(400).json(erro);
+                res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
+                console.log(erro);
             }
             else {
-                res.status(200).json(sucess);
+                res.status(200).json(GenerateJsonSucess("OK", sucess));
             }
         });
     }
     
     coletarDadosAll(res) {
-        const sql = "SELECT * FROM dados_climaticos ORDER BY id ASC;";
+        const sql = "SELECT * FROM dados_climaticos ORDER BY reg_index ASC;";
 
         conexao.query(sql, (erro, sucess) => {
             if(erro) {
-                res.status(400).json(erro);
+                res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
+                console.log(erro);
             }
             else {
-                res.status(200).json(sucess);
+                res.status(200).json(GenerateJsonSucess("OK", sucess));
             }
         });
     }
 }
 
 module.exports = new clima;
+
+function GenerateJsonError(_type, _message) {
+    const json_ = {
+        message: _message,
+        type: _type,
+        sucess: false
+    }
+    return json_;
+}
+
+function GenerateJsonSucess(_message, _data) {
+    const json_ = {
+        message: _message,
+        type: "sucess_message",
+        sucess: true,
+        data: _data
+    }
+    return json_;
+}
