@@ -8,7 +8,7 @@ https://api-dados-climaticos.herokuapp.com/
 # Metodos permitidos:
 
 - POST: /inserirdados/ (Faz a inserção dos dados no banco de dados)
-- GET: /coletardados/:id_do_esp (Coleta o registro de um único ESP)
+- GET: /coletardados/{id_do_esp} (Coleta o registro de um único ESP)
 - GET: /coletardadostodos/ (Coleta os registros de todos os ESP's)
 - GET: /coletardadosmax/ (Coleta o ultimo registro de cada ESP)
 
