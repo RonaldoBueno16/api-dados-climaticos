@@ -6,9 +6,20 @@ Essa API tem como função principal o envio de dados climáticos coletados pelo
 
 - POST: /inserirdados/ (Faz a inserção dos dados no banco de dados)
 - GET: /coletardados/:id_do_esp (Coleta o registro de um único ESP)
-- GET: /coletardadostodos/ (coleta os registros de todos os ESP's)
-- GET: coletardadosmax (Coleta o ultimo registro de cada ESP)
+- GET: /coletardadostodos/ (Coleta os registros de todos os ESP's)
+- GET: /coletardadosmax/ (Coleta o ultimo registro de cada ESP)
 
-# Formulário de simulação do funcionamento da API:
+# Exemplo de JSON para fazer a inserção de dados
 
-https://site-api-heroku.000webhostapp.com/index.html
+{
+   "esp_key":"authentication_key",
+   "sensors":{
+      "umidade": value,
+      "temperatura": value,
+      "luminosidade": value,
+      "pressao": value,
+      "altitude": value,
+      "chuva": value
+   }
+}
+
