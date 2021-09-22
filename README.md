@@ -1,6 +1,9 @@
 # API Grupo Vegeta
 Essa API tem como função principal o envio de dados climáticos coletados pelos sensores dos ESP's para o servidor e a consulta desses dados pelo cliente(aplicativo). 
  
+# Endereço da API
+
+https://api-dados-climaticos.herokuapp.com/
 
 # Metodos permitidos:
 
