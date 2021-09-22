@@ -11,9 +11,11 @@ Essa API tem como função principal o envio de dados climáticos coletados pelo
 
 # Exemplo de JSON para fazer a inserção de dados
 
+```
 {
    "esp_key":"authentication_key",
-   "sensors":{
+   "sensors":
+   {
       "umidade": value,
       "temperatura": value,
       "luminosidade": value,
