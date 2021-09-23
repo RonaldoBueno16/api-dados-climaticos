@@ -27,6 +27,6 @@ module.exports = app => {
     })
     app.get("/", (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
-        res.json({stats: "OK"})
+        res.json({status: "OK"})
     })
 }
