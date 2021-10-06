@@ -87,17 +87,23 @@ class clima {
     }
     
     coletarDadosESP(auth_key, res) {
-        const sql = `SELECT a.esp_auth, a.esp_index, a.esp_nome, b.* FROM lista_esps a INNER JOIN dados_climaticos b ON a.esp_index=b.esp_index WHERE a.esp_auth=${auth_key} ORDER BY b.datadoregistro LIMIT 10;`
+        if(auth_key == null) {
+            res.status(500).json(GenerateJsonError("sql_error", "Uso correto endpoint: /coletardados?auth=esp_key}"));
+        }
+        else {
+            const sql = `SELECT a.esp_auth, a.esp_index, a.esp_nome, b.* FROM lista_esps a INNER JOIN dados_climaticos b ON a.esp_index=b.esp_index WHERE a.esp_auth=${auth_key} ORDER BY b.datadoregistro LIMIT 10;`
+            
+            conexao.query(sql, (erro, sucesso) => {
+                if(erro) {
+                    res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
+                    console.log(erro);
+                }
+                else {
+                    res.status(200).json(GenerateJsonSucess("OK",sucesso));
+                }
+            });
+        }
         
-        conexao.query(sql, (erro, sucesso) => {
-            if(erro) {
-                res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
-                console.log(erro);
-            }
-            else {
-                res.status(200).json(GenerateJsonSucess("OK",sucesso));
-            }
-        });
     }
 
     coletarDadosMax(res) {
