@@ -87,7 +87,8 @@ class clima {
     }
     
     coletarDadosESP(auth_key, res) {
-        if(auth_key == null) {
+        console.log(auth_key);
+        if(auth_key == '') {
             res.status(500).json(GenerateJsonError("sql_error", "Uso correto endpoint: /coletardados?auth=esp_key}"));
         }
         else {
