@@ -87,7 +87,7 @@ class clima {
     }
     
     coletarDadosESP(auth_key, res) {
-        const sql = `SELECT * FROM dados_climaticos WHEREa esp_index = (SELECT esp_index FROM lista_esps WHERE esp_auth='${auth_key}');`
+        const sql = `SELECT a.esp_auth, a.esp_index, a.esp_nome, b.* FROM lista_esps a INNER JOIN dados_climaticos b ON a.esp_index=b.esp_index WHERE a.esp_auth=${auth_key} ORDER BY b.datadoregistro LIMIT 10;`
         
         conexao.query(sql, (erro, sucesso) => {
             if(erro) {

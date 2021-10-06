@@ -2,6 +2,7 @@ const clima = require("../models/clima");
 
 module.exports = app => {
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
+        console.log("oi");
         res.header("Access-Control-Allow-Origin", "*");
         const dados = req.body;
 
@@ -15,6 +16,7 @@ module.exports = app => {
     })
     app.get('/coletardados', (req, res, next) => { //OK REVISADO
         res.header("Access-Control-Allow-Origin", "*");
+        console.log(req.query.auth);
         clima.coletarDadosESP(req.query.auth, res);
     })
     app.get('/coletardadosmax', (req, res, next) => { //A REVISAR
