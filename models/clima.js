@@ -134,6 +134,25 @@ class clima {
             }
         });
     }
+
+    loginADM(dados, res) {
+        const SQL = `SELECT user_index FROM usersadmin WHERE user_name='${dados.user}' AND user_password='${dados.password}';`
+
+        conexao.query(SQL, (error, sucess) => {
+            if(error) {
+                console.log(error);
+            }
+            else {
+                if(sucess.length == 0) {
+                    res.status(200).json(GenerateJsonSucess("Não foi encontrado nenhum usuário", sucess));
+                }
+                else
+                {
+                    res.status(200).json(GenerateJsonSucess("Usuário encontrado", sucess));
+                }
+            }
+        })
+    }
 }
 
 module.exports = new clima;

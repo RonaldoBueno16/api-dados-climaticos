@@ -1,8 +1,14 @@
 const clima = require("../models/clima");
 
 module.exports = app => {
+    app.post('/login', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+        console.log("Logando");
+        const dados = req.body;
+
+        clima.loginADM(dados, res);
+    });
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
-        console.log("oi");
         res.header("Access-Control-Allow-Origin", "*");
         const dados = req.body;
 
