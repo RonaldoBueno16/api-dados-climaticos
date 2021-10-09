@@ -1,0 +1,21 @@
+.menu
+{
+    width: 250px;
+    height: auto;
+}
+
+.content
+{
+    width: 100vw;
+    margin-left: 250px;
+}
+
+.menu-user>img
+{
+    width: 50%;
+}
+
+input
+{
+    margin-bottom: 5px;
+}

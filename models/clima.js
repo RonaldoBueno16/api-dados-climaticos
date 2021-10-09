@@ -2,8 +2,9 @@
 const { type } = require("jquery");
 const moment = require("moment");
 const conexao = require("../infraestrutura/conexao")
+const {Validator} = require("jsonschema");
 
-
+const v = new Validator();
 
 class clima {
     adicionar(objeto, res) {
@@ -127,7 +128,6 @@ class clima {
         conexao.query(sql, (erro, sucess) => {
             if(erro) {
                 res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
-                console.log(erro);
             }
             else {
                 res.status(200).json(GenerateJsonSucess("OK", sucess));
@@ -136,22 +136,37 @@ class clima {
     }
 
     loginADM(dados, res) {
-        const SQL = `SELECT user_index FROM usersadmin WHERE user_name='${dados.user}' AND user_password='${dados.password}';`
+        const schema = {
+            type: "object",
+            properties: {
+                login: {"type": "string"},
+                password: {"type": "string"}
+            },
+            required: ['login', 'password']
+        };
 
-        conexao.query(SQL, (error, sucess) => {
-            if(error) {
-                console.log(error);
-            }
-            else {
-                if(sucess.length == 0) {
-                    res.status(200).json(GenerateJsonSucess("Não foi encontrado nenhum usuário", sucess));
+        if(v.validate(dados, schema).valid) {
+            const SQL = `SELECT user_index FROM usersadmin WHERE user_name='${dados.login}' AND user_password='${dados.password}';`
+    
+            conexao.query(SQL, (error, sucess) => {
+                if(error) {
+                    res.status(400).json(GenerateJsonError("invalid_json", "Consulta SQL inválida"));
                 }
-                else
-                {
-                    res.status(200).json(GenerateJsonSucess("Usuário encontrado", sucess));
+                else {
+                    if(sucess.length == 0) {
+                        res.status(200).json(GenerateJsonSucess("Não foi encontrado nenhum usuário", sucess));
+                    }
+                    else
+                    {
+                        res.status(200).json(GenerateJsonSucess("Usuário encontrado", sucess[0]));
+                    }
                 }
-            }
-        })
+            })
+        }
+        else {
+            res.status(400).json(GenerateJsonError("invalid_json", "Estrutura do JSON inválido"));
+        }
+
     }
 }
 

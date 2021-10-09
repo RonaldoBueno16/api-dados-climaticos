@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
         <link href="./style.css" rel="stylesheet">
         <link rel="SHORTCUT ICON" href="./images/vegeta.ico">
         
@@ -14,6 +14,10 @@
                 Login
             </div>
             <div class="card-body">
+                <div class="alert alert-danger divError" id="divinvalidcredentials" role="alert">
+                    Usuário ou senha inválidos!
+                    <button class="btnClose">X</button>
+                </div>
                 <form>
                     <div class="form-group">
                         <label for="inputLogin">Usuário</label>
@@ -35,6 +39,8 @@
         </div>
     </body>
     
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
     <script src="js/main.js"></script>
 </html>

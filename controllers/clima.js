@@ -3,7 +3,6 @@ const clima = require("../models/clima");
 module.exports = app => {
     app.post('/login', (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
-        console.log("Logando");
         const dados = req.body;
 
         clima.loginADM(dados, res);
@@ -22,7 +21,6 @@ module.exports = app => {
     })
     app.get('/coletardados', (req, res, next) => { //OK REVISADO
         res.header("Access-Control-Allow-Origin", "*");
-        console.log(req.query.auth);
         clima.coletarDadosESP(req.query.auth, res);
     })
     app.get('/coletardadosmax', (req, res, next) => { //A REVISAR
