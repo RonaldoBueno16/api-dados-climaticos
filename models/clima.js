@@ -49,7 +49,17 @@ class clima {
                                 res.status(501).json(GenerateJsonError("invalid_json", "Não foi possível inserir o registro no banco (SQL)"));
                             }
                             else {
-                                res.status(201).json(GenerateJsonSucess("Usuário cadastrado com sucesso", {'user_id': sucess.insertId}))
+                                const insertId = sucess.insertId;
+                                SQL = `INSERT INTO address(user_id, user_cep, user_rua, user_bairro, user_cidade, user_uf) VALUES(${insertId}, '${data.cep}', '${data.rua}', '${data.bairro}', '${data.cidade}', '${data.UF}')`;
+
+                                conexao.query(SQL, (error, sucess) => {
+                                    if(error) {
+                                        res.status(501).json(GenerateJsonError("invalid_json", "Não foi possível inserir o registro no banco (SQL)"));
+                                    }
+                                    else {
+                                        res.status(201).json(GenerateJsonSucess("Usuário cadastrado com sucesso", {'user_id': insertId}))
+                                    }
+                                })
                             }
                         })
                     }
