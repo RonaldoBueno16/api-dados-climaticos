@@ -7,6 +7,60 @@ const {Validator} = require("jsonschema");
 const v = new Validator();
 
 class clima {
+    registerUser(data, res) {
+        const schema = {
+            type: "object",
+            properties: {
+                event: {"type": "string"},
+                nome: {"type": "string"},
+                sobrenome: {"type": "string"},
+                sexo: {"type": "string"},
+                data_nasc: {"type": "string"},
+                cep: {"type": "int"},
+                rua: {"type": "string"},
+                bairro: {"type": "string"},
+                cidade: {"type": "string"},
+                UF: {"type": "string"},
+                login: {"type": "string"},
+                senha: {"type": "string"}
+            },
+            required: ['event', 'nome', 'sobrenome', 'sexo', 'data_nasc', 'cep', 'rua', 'bairro', 'cidade', 'UF', 'login', 'senha']
+        };
+
+        let SQL = "";
+        if(v.validate(data, schema).valid) {
+            
+            SQL = `SELECT user_id FROM users WHERE user_login='${data.login}'`;
+            console.log(SQL);
+            conexao.query(SQL, (error, sucess) => {
+                if(error) {
+                    res.status(501).json(GenerateJsonError("invalid_json", "Não foi possível inserir o registro no banco (SQL)"));
+                }
+                else {
+                    if(sucess.length > 0) {
+                        res.status(401).json(GenerateJsonError("login_repeat", "Já tem um usuário com esse nome!"));
+                    }
+                    else {
+                        SQL = `INSERT INTO users(user_name, user_sobrenome, user_nascimento, user_sexo, user_login, user_password) VALUES('${data.nome}', '${data.sobrenome}', '${data.data_nasc}', '${data.sexo}', '${data.login}', '${data.senha}')`
+
+                        conexao.query(SQL, (error, sucess) => {
+                            if(error) {
+                                res.status(501).json(GenerateJsonError("invalid_json", "Não foi possível inserir o registro no banco (SQL)"));
+                            }
+                            else {
+                                res.status(201).json(GenerateJsonSucess("Usuário cadastrado com sucesso", {'user_id': sucess.insertId}))
+                            }
+                        })
+                    }
+                }
+            });
+
+        }
+        else {
+            res.status(401).json(GenerateJsonError("invalid_json", "Parâmetros insuficientes."));
+        }
+    }
+    
     adicionar(objeto, res) {
         const validacoes = [
             {//Verificar autenticação
@@ -162,6 +216,7 @@ class clima {
                     }
                 }
             })
+
         }
         else {
             res.status(400).json(GenerateJsonError("invalid_json", "Estrutura do JSON inválido"));

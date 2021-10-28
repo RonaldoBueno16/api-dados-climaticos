@@ -1,6 +1,16 @@
 const clima = require("../models/clima");
 
 module.exports = app => {
+    app.post('/user/subscription', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+
+        const data = req.body;
+        console.log(data);
+
+        clima.registerUser(data, res);
+    })
+    
+    
     app.post('/login', (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
         const dados = req.body;
@@ -35,4 +45,5 @@ module.exports = app => {
         res.header("Access-Control-Allow-Origin", "*");
         res.json({status: "OK"})
     })
+    
 }
