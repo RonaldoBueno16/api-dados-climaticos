@@ -9,14 +9,7 @@ module.exports = app => {
 
         clima.registerUser(data, res);
     })
-    
-    
-    app.post('/login', (req, res, next) => {
-        res.header("Access-Control-Allow-Origin", "*");
-        const dados = req.body;
 
-        clima.loginADM(dados, res);
-    });
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
         res.header("Access-Control-Allow-Origin", "*");
         const dados = req.body;

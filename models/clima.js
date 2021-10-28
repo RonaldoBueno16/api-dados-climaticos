@@ -3,6 +3,7 @@ const { type } = require("jquery");
 const moment = require("moment");
 const conexao = require("../infraestrutura/conexao")
 const {Validator} = require("jsonschema");
+const { json } = require("body-parser");
 
 const v = new Validator();
 
@@ -16,7 +17,7 @@ class clima {
                 sobrenome: {"type": "string"},
                 sexo: {"type": "string"},
                 data_nasc: {"type": "string"},
-                cep: {"type": "int"},
+                cep: {"type": "number"},
                 rua: {"type": "string"},
                 bairro: {"type": "string"},
                 cidade: {"type": "string"},
@@ -54,10 +55,17 @@ class clima {
                     }
                 }
             });
-
         }
         else {
-            res.status(401).json(GenerateJsonError("invalid_json", "Parâmetros insuficientes."));
+            let jsonRequest = [];
+            
+            Object.keys(schema.properties).forEach((item) => {
+                if(data[item] == undefined || typeof(data[item]) != schema.properties[item].type) {
+                    jsonRequest.push({'request': `${item} (${schema.properties[item].type})`});
+                }
+            })
+            
+            res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", parametros_faltantes: jsonRequest}));
         }
     }
     
@@ -189,40 +197,6 @@ class clima {
         });
     }
 
-    loginADM(dados, res) {
-        const schema = {
-            type: "object",
-            properties: {
-                login: {"type": "string"},
-                password: {"type": "string"}
-            },
-            required: ['login', 'password']
-        };
-
-        if(v.validate(dados, schema).valid) {
-            const SQL = `SELECT user_index FROM usersadmin WHERE user_name='${dados.login}' AND user_password='${dados.password}';`
-    
-            conexao.query(SQL, (error, sucess) => {
-                if(error) {
-                    res.status(400).json(GenerateJsonError("invalid_json", "Consulta SQL inválida"));
-                }
-                else {
-                    if(sucess.length == 0) {
-                        res.status(200).json(GenerateJsonSucess("Não foi encontrado nenhum usuário", sucess));
-                    }
-                    else
-                    {
-                        res.status(200).json(GenerateJsonSucess("Usuário encontrado", sucess[0]));
-                    }
-                }
-            })
-
-        }
-        else {
-            res.status(400).json(GenerateJsonError("invalid_json", "Estrutura do JSON inválido"));
-        }
-
-    }
 }
 
 module.exports = new clima;
