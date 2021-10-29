@@ -77,6 +77,47 @@ class clima {
             res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", parametros_faltantes: jsonRequest}));
         }
     }
+
+    authUser(data, res) {
+        const schema = {
+            type: "object",
+            properties: {
+                event: {"type": "string"},
+                login: {"type": "string"},
+                senha: {"type": "string"}
+            },
+            required: ['event', 'login', 'senha']
+        };
+
+        if(v.validate(data, schema).valid) {
+            const SQL = `SELECT user_id FROM users WHERE user_login='${data.login}' AND user_password='${data.senha}'`;
+
+            conexao.query(SQL, (erro, sucess) => {
+                if(erro) {
+                    res.status(501).json(GenerateJsonError("invalid_json", "Não foi possível inserir o registro no banco (SQL)"));
+                }
+                else {
+                    if(sucess.length == 0) {
+                        res.status(401).json(GenerateJsonError("auth_failure", "Não foi encontrado nenhum usuário com essas credenciais."));
+                    }
+                    else {
+                        res.status(200).json(GenerateJsonSucess("OK", sucess));
+                    }
+                }
+            });
+        }
+        else {
+            let jsonRequest = [];
+            
+            Object.keys(schema.properties).forEach((item) => {
+                if(data[item] == undefined || typeof(data[item]) != schema.properties[item].type) {
+                    jsonRequest.push({'request': `${item} (${schema.properties[item].type})`});
+                }
+            })
+            
+            res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", parametros_faltantes: jsonRequest}));
+        }
+    }
     
     adicionar(objeto, res) {
         const validacoes = [

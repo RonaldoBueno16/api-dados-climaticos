@@ -5,9 +5,15 @@ module.exports = app => {
         res.header("Access-Control-Allow-Origin", "*");
 
         const data = req.body;
-        console.log(data);
 
         clima.registerUser(data, res);
+    })
+    app.get('/user/auth', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+
+        const data = req.body;
+
+        clima.authUser(data, res);
     })
 
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
