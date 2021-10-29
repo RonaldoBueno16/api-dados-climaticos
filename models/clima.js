@@ -15,7 +15,6 @@ class clima {
                 event: {"type": "string"},
                 nome: {"type": "string"},
                 sobrenome: {"type": "string"},
-                sexo: {"type": "string"},
                 data_nasc: {"type": "string"},
                 cep: {"type": "number"},
                 rua: {"type": "string"},
@@ -25,7 +24,7 @@ class clima {
                 login: {"type": "string"},
                 senha: {"type": "string"}
             },
-            required: ['event', 'nome', 'sobrenome', 'sexo', 'data_nasc', 'cep', 'rua', 'bairro', 'cidade', 'UF', 'login', 'senha']
+            required: ['event', 'nome', 'sobrenome', 'data_nasc', 'cep', 'rua', 'bairro', 'cidade', 'UF', 'login', 'senha']
         };
 
         let SQL = "";
