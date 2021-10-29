@@ -13,6 +13,9 @@ module.exports = app => {
 
         const data = req.body;
         console.log(data);
+        console.log(req.data);
+        console.log(req.params);
+        console.log(req.query);
 
         clima.authUser(data, res);
     })
