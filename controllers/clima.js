@@ -12,6 +12,7 @@ module.exports = app => {
         res.header("Access-Control-Allow-Origin", "*");
 
         const data = req.body;
+        console.log(data);
 
         clima.authUser(data, res);
     })
