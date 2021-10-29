@@ -98,7 +98,7 @@ class clima {
                 }
                 else {
                     if(sucess.length == 0) {
-                        res.status(401).json(GenerateJsonError("auth_failure", "Não foi encontrado nenhum usuário com essas credenciais."));
+                        res.status(200).json(GenerateJsonError("auth_failure", "Não foi encontrado nenhum usuário com essas credenciais."));
                     }
                     else {
                         res.status(200).json(GenerateJsonSucess("OK", sucess));
