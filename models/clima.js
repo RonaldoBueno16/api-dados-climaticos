@@ -29,19 +29,17 @@ class clima {
 
         let SQL = "";
         if(v.validate(data, schema).valid) {
-            
             SQL = `SELECT user_id FROM users WHERE user_login='${data.login}'`;
-            console.log(SQL);
             conexao.query(SQL, (error, sucess) => {
                 if(error) {
                     res.status(501).json(GenerateJsonError("invalid_json", "Não foi possível inserir o registro no banco (SQL)"));
                 }
                 else {
                     if(sucess.length > 0) {
-                        res.status(401).json(GenerateJsonError("login_repeat", "Já tem um usuário com esse nome!"));
+                        res.status(400).json(GenerateJsonError("login_repeat", "Já tem um usuário com esse nome!"));
                     }
                     else {
-                        SQL = `INSERT INTO users(user_name, user_sobrenome, user_nascimento, user_sexo, user_login, user_password) VALUES('${data.nome}', '${data.sobrenome}', '${data.data_nasc}', '${data.sexo}', '${data.login}', '${data.senha}')`
+                        SQL = `INSERT INTO users(user_name, user_sobrenome, user_nascimento, user_login, user_password) VALUES('${data.nome}', '${data.sobrenome}', '${data.data_nasc}', '${data.login}', '${data.senha}')`
 
                         conexao.query(SQL, (error, sucess) => {
                             if(error) {
@@ -98,13 +96,14 @@ class clima {
                 }
                 else {
                     if(sucess.length == 0) {
-                        res.status(200).json(GenerateJsonError("auth_failure", "Não foi encontrado nenhum usuário com essas credenciais."));
+                        res.status(400).json(GenerateJsonError("auth_failure", "Não foi encontrado nenhum usuário com essas credenciais."));
                     }
                     else {
                         res.status(200).json(GenerateJsonSucess("OK", sucess));
                     }
                 }
             });
+
         }
         else {
             let jsonRequest = [];
@@ -169,7 +168,6 @@ class clima {
             conexao.query(sql, (erro, sucess) => {
                 if(erro) {
                     res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
-                    console.log(erro);
                 }
                 else {
                     if(sucess.length == 0) {
@@ -183,7 +181,6 @@ class clima {
                         conexao.query(sql, (erro, sucess) => {
                             if(erro) {
                                 res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
-                                console.log(erro);
                             }
                             else {
                                 res.status(200).json(GenerateJsonSucess("registro inserido com sucesso", {insertId: sucess.insertId}))
@@ -195,12 +192,168 @@ class clima {
         }
     }
 
-    vincularEsp(objeto, res) {
-        
+    vincularEsp(data, res) {
+        const schema = {
+            type: "object",
+            properties: {
+                user_id: {"type": "string"},
+                esp_key: {"type": "string"},
+            },
+            required: ['user_id', 'esp_key']
+        };
+
+        if(v.validate(data, schema).valid) {
+            let SQL = `SELECT u.user_id,u.user_name,u.user_login FROM users u WHERE u.user_id='${data.user_id}'`;
+
+            conexao.query(SQL, (err, sucess) => {
+                if(err) {
+                    res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o usuário."));
+                }
+                else {
+                    if(sucess.length > 0) {
+                        const user_id = sucess[0].user_id;
+                        const user_name = sucess[0].user_name;
+                        const user_login = sucess[0].user_login;
+
+                        SQL = `SELECT esp_owner, esp_index FROM lista_esps WHERE esp_auth='${data.esp_key}'`;
+                        conexao.query(SQL, (err, sucess) => {
+                            if(err) {
+                                res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o ESP."));
+                            }
+                            else {
+                                if(sucess.length > 0) {
+                                    const esp_index = sucess[0].esp_index;
+                                    const esp_owner = sucess[0].esp_owner;
+
+                                    if(esp_owner == null) {
+
+                                        SQL = `UPDATE lista_esps SET esp_owner='${user_id}' WHERE esp_index=${esp_index}`;
+                                        conexao.query(SQL, (err, sucess) => {
+                                            if(err) {
+                                                res.status(500).json(GenerateJsonError("sql_error", "Falha ao atualizar os dados do equipamento."));
+                                            }
+                                            else {
+                                                res.status(200).json(GenerateJsonSucess("data", {
+                                                    status: 'esp_bound',
+                                                    message: 'O equipamento foi vinculado ao seu usuário!'
+                                                }));
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        res.status(401).json(GenerateJsonError("esp_owner", "Esse equipamento está cadastrado em outro dispositivo."));
+                                    }
+                                    
+                                    
+                                }
+                                else {
+                                    res.status(401).json(GenerateJsonError("esp_invalid", "Key inválida"));
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        res.status(401).json(GenerateJsonError("auth_failure", "Sessão encerrada"));
+                    }
+                    
+                }
+            });
+        }
+        else {
+            let jsonRequest = [];
+            
+            Object.keys(schema.properties).forEach((item) => {
+                if(data[item] == undefined || typeof(data[item]) != schema.properties[item].type) {
+                    jsonRequest.push({'request': `${item} (${schema.properties[item].type})`});
+                }
+            })
+            
+            res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", params: jsonRequest}));
+        }
     }
     
+    desvincularEsp(data, res) {
+        const schema = {
+            type: "object",
+            properties: {
+                user_id: {"type": "string"},
+                esp_index: {"type": "string"}
+            },
+            required: ['user_id', 'esp_index']
+        };
+
+        
+        if(v.validate(data, schema).valid) {
+            let SQL = `SELECT user_id FROM users WHERE user_id='${data.user_id}'`;
+
+            conexao.query(SQL, (err, sucess) => {
+                if(err) {
+                    res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o usuário."));
+                }
+                else {
+                    if(sucess.length > 0) {
+                        const user_id = sucess[0].user_id;
+                        
+                        SQL = `SELECT esp_owner FROM lista_esps WHERE esp_index='${data.esp_index}' OR esp_auth='${data.esp_index}'`;
+                        conexao.query(SQL, (err, sucess) => {
+                            if(err) {
+                                res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o ESP."));
+                            }
+                            else {
+                                if(sucess.length) {
+                                    const owner = sucess[0].esp_owner;
+                                    if(owner != user_id) {
+                                        if(owner == null) {
+                                            res.status(401).json(GenerateJsonError("esp_owner", "Esse não está cadastrado em nenhum dispositivio."));
+                                        }
+                                        else {
+                                            res.status(401).json(GenerateJsonError("esp_owner", "Esse equipamento está cadastrado em outro dispositivo."));
+                                        }
+                                    }
+                                    else {
+                                        SQL = `UPDATE lista_esps SET esp_owner=NULL WHERE esp_index=${data.esp_index}`;
+
+                                        conexao.query(SQL, (err, sucess) => {
+                                            if(err) {
+                                                res.status(500).json(GenerateJsonError("sql_error", "Falha ao atualizar o ESP."));
+                                            }
+                                            else {
+                                                res.status(200).json(GenerateJsonSucess("data", {
+                                                    status: 'esp_unbind',
+                                                    message: 'O equipamento foi desvinculado com sucesso!'
+                                                }));
+                                            }
+                                        })
+                                    }
+                                }
+                                else {
+                                    res.status(400).json(GenerateJsonError("invalid_esp", "ESP inválido!"));
+                                }
+                                
+                            }
+                        })
+                    }
+                    else {
+                        res.status(400).json(GenerateJsonError("auth_failure", "Sessão encerrada."));
+                    }
+                }
+            });
+        }
+        else {
+            let jsonRequest = [];
+            
+            Object.keys(schema.properties).forEach((item) => {
+                if(data[item] == undefined || typeof(data[item]) != schema.properties[item].type) {
+                    jsonRequest.push({'request': `${item} (${schema.properties[item].type})`});
+                }
+            })
+            
+            res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", params: jsonRequest}));
+        }
+    }
+    
+    
     coletarDadosESP(auth_key, res) {
-        console.log(auth_key);
         if(auth_key == '') {
             res.status(500).json(GenerateJsonError("sql_error", "Uso correto endpoint: /coletardados?auth=esp_key}"));
         }
@@ -210,7 +363,6 @@ class clima {
             conexao.query(sql, (erro, sucesso) => {
                 if(erro) {
                     res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
-                    console.log(erro);
                 }
                 else {
                     res.status(200).json(GenerateJsonSucess("OK",sucesso));
@@ -226,7 +378,6 @@ class clima {
         conexao.query(sql, (erro, sucess) => {
             if(erro) {
                 res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
-                console.log(erro);
             }
             else {
                 res.status(200).json(GenerateJsonSucess("OK", sucess));
