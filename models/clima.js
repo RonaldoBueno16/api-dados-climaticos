@@ -198,8 +198,8 @@ class clima {
             properties: {
                 user_id: {"type": "string"},
                 esp_key: {"type": "string"},
-                latitude: {"type": "string"},
-                longitude: {"type": "string"},
+                latitude: {"type": "float"},
+                longitude: {"type": "float"},
             },
             required: ['user_id', 'esp_key', 'latitude', 'longitude']
         };
