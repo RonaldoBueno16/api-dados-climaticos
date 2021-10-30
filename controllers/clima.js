@@ -27,6 +27,11 @@ module.exports = app => {
         
         clima.desvincularEsp(req.query, res);
     });
+    app.get('/user/esp/getall/:user_id', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+
+        console.log(req.params);
+    });
 
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
         res.header("Access-Control-Allow-Origin", "*");
