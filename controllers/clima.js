@@ -30,7 +30,7 @@ module.exports = app => {
     app.get('/user/esp/getall/:user_id', (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
 
-        console.log(req.params);
+        clima.getAllESP(req.params, res);
     });
 
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO

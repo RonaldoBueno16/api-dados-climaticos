@@ -359,7 +359,7 @@ class clima {
             properties: {
                 user_id: {"type": "string"}
             },
-            required: ['user_id', 'esp_index']
+            required: ['user_id']
         };
 
         if(v.validate(data, schema).valid) {
@@ -374,9 +374,16 @@ class clima {
                         res.status(400).json(GenerateJsonError("auth_failure", "Sessão encerrada."));
                     }
                     else {
+                        SQL = `SELECT esp_index, esp_latitude, esp_longitude, esp_nome FROM lista_esps WHERE esp_owner = '${data.user_id}'`;
                         
-
-
+                        conexao.query(SQL, (err, sucess) => {
+                            if(err) {
+                                res.status(400).json(GenerateJsonError("sql_error", err));
+                            }
+                            else {
+                                res.status(200).json(GenerateJsonSucess("Listando todos os ESP's do usuário", sucess));
+                            }
+                        })
                     }
                 }
             })
