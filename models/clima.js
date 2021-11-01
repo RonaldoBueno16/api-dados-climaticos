@@ -426,16 +426,38 @@ class clima {
                         res.status(400).json(GenerateJsonError("auth_failure", "Sessão encerrada."));
                     }
                     else {
-                        SQL = `SELECT DISTINCT DATE_FORMAT(a.datadoregistro, '%d/%m/%Y') AS data_registro, COUNT(*) AS registros, b.esp_latitude,  b.esp_longitude FROM dados_climaticos a INNER JOIN lista_esps b ON a.esp_index=b.esp_index WHERE a.esp_index='${data.esp_index}' GROUP BY data_registro ORDER BY data_registro ASC;`;
-                        
+                        SQL = `SELECT esp_latitude, esp_longitude FROM lista_esps WHERE esp_index=${data.esp_index}`
                         conexao.query(SQL, (err, sucess) => {
                             if(err) {
-                                res.status(400).json(GenerateJsonError("sql_error", err));
+                                res.status(400).json(GenerateJsonError("sql_error", "Não foi possível encontrar o ESP"));
                             }
                             else {
-                                res.status(200).json(GenerateJsonSucess("Listando todas as datas e quantidade de registros", sucess));
+                                if(sucess.length) {
+                                    const latitude = sucess[0].esp_latitude;
+                                    const longitude = sucess[0].esp_longitude;
+
+                                    SQL = `SELECT DISTINCT DATE_FORMAT(a.datadoregistro, '%d/%m/%Y') AS data_registro, COUNT(*) AS registros FROM dados_climaticos a WHERE a.esp_index='${data.esp_index}' GROUP BY data_registro ORDER BY data_registro ASC;`;
+                        
+                                    conexao.query(SQL, (err, sucess) => {
+                                        if(err) {
+                                            res.status(400).json(GenerateJsonError("sql_error", err));
+                                        }
+                                        else {
+                                            res.status(200).json(GenerateJsonSucess("Listando todas as datas e quantidade de registros", {
+                                                latitude: latitude,
+                                                longitude: longitude,
+                                                registros: sucess
+                                            }));
+                                        }
+                                    })
+                                }
+                                else {
+                                    res.status(400).json(GenerateJsonError("sql_error", "Não foi possível encontrar o ESP"));
+                                }
                             }
                         })
+                        
+                        
                     }
                 }
             })
