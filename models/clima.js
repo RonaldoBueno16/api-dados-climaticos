@@ -88,7 +88,21 @@ class clima {
         };
 
         if(v.validate(data, schema).valid) {
-            const SQL = `SELECT user_id FROM users WHERE user_login='${data.login}' AND user_password='${data.senha}'`;
+            const SQL = `SELECT a.user_id,
+                        a.user_name,
+                        a.user_sobrenome,
+                        a.user_nascimento,
+                        b.user_rua,
+                        b.user_cep,
+                        b.user_bairro,
+                        b.user_cidade,
+                        b.user_uf
+                        FROM users a
+                        INNER JOIN address b ON a.user_id=b.user_id
+                        WHERE 
+                        a.user_login='${data.login}' 
+                        AND 
+                        a.user_password='${data.senha}'`
 
             conexao.query(SQL, (erro, sucess) => {
                 if(erro) {
@@ -228,7 +242,7 @@ class clima {
                                     const esp_owner = sucess[0].esp_owner;
 
                                     if(esp_owner == null) {
-                                        SQL = `UPDATE lista_esps SET esp_owner='${user_id}', esp_latitude='${latitude}', esp_longitude='${longitude}' WHERE esp_index=${esp_index}`;
+                                        SQL = `UPDATE lista_esps SET esp_owner='${user_id}', esp_vinculacao='${moment(new Date()).format("YYYY-MM-DD HH:mm:ss")}', esp_latitude='${latitude}', esp_longitude='${longitude}' WHERE esp_index=${esp_index}`;
                                         conexao.query(SQL, (err, sucess) => {
                                             if(err) {
                                                 res.status(500).json(GenerateJsonError("sql_error", "Falha ao atualizar os dados do equipamento."));
