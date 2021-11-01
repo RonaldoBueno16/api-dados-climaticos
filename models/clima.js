@@ -426,7 +426,7 @@ class clima {
                         res.status(400).json(GenerateJsonError("auth_failure", "Sessão encerrada."));
                     }
                     else {
-                        SQL = `SELECT DISTINCT DATE_FORMAT(a.datadoregistro, '%d/%m/%Y') AS data_registro, COUNT(*) AS registros FROM dados_climaticos a WHERE esp_index='${data.esp_index}' GROUP BY data_registro ORDER BY data_registro ASC`;
+                        SQL = `SELECT DISTINCT DATE_FORMAT(a.datadoregistro, '%d/%m/%Y') AS data_registro, COUNT(*) AS registros, b.esp_latitude,  b.esp_longitude FROM dados_climaticos a INNER JOIN lista_esps b ON a.esp_index=b.esp_index WHERE a.esp_index='${data.esp_index}' GROUP BY data_registro ORDER BY data_registro ASC;`;
                         
                         conexao.query(SQL, (err, sucess) => {
                             if(err) {
