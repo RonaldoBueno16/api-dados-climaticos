@@ -445,10 +445,10 @@ class clima {
                                             AVG(a.chuva) AS media_chuva,
                                             MIN(a.temperatura) AS minimo_temperatura,
                                             MAX(a.temperatura) AS maximo_temperatura,
-                                            (SELECT DATE_FORMAT(b.datadoregistro, '%d/%m/%Y as %H:%m:%s') FROM dados_climaticos b WHERE b.temperatura=MIN(a.temperatura) LIMIT 1) AS hora_mintemperatura,
-                                            (SELECT DATE_FORMAT(b.datadoregistro, '%d/%m/%Y as %H:%m:%s') FROM dados_climaticos b WHERE b.temperatura=MAX(a.temperatura) LIMIT 1) AS hora_maxtemperatura,
-                                            (SELECT DATE_FORMAT(b.datadoregistro, '%d/%m/%Y as %H:%m:%s') FROM dados_climaticos b WHERE b.luminosidade=MAX(a.luminosidade) LIMIT 1) AS hora_maxluminosidade,
-                                            (SELECT DATE_FORMAT(b.datadoregistro, '%d/%m/%Y as %H:%m:%s') FROM dados_climaticos b WHERE b.luminosidade=MIN(a.luminosidade) LIMIT 1) AS hora_minluminosidade
+                                            (SELECT DATE_FORMAT(b.datadoregistro, '%H:%m:%s') FROM dados_climaticos b WHERE b.temperatura=MIN(a.temperatura) LIMIT 1) AS hora_mintemperatura,
+                                            (SELECT DATE_FORMAT(b.datadoregistro, '%H:%m:%s') FROM dados_climaticos b WHERE b.temperatura=MAX(a.temperatura) LIMIT 1) AS hora_maxtemperatura,
+                                            (SELECT DATE_FORMAT(b.datadoregistro, '%H:%m:%s') FROM dados_climaticos b WHERE b.luminosidade=MAX(a.luminosidade) LIMIT 1) AS hora_maxluminosidade,
+                                            (SELECT DATE_FORMAT(b.datadoregistro, '%H:%m:%s') FROM dados_climaticos b WHERE b.luminosidade=MIN(a.luminosidade) LIMIT 1) AS hora_minluminosidade
                                             FROM dados_climaticos a
                                             WHERE a.esp_index='${data.esp_index}'
                                             GROUP BY data_registro ORDER BY data_registro ASC`;
