@@ -436,7 +436,22 @@ class clima {
                                     const latitude = sucess[0].esp_latitude;
                                     const longitude = sucess[0].esp_longitude;
 
-                                    SQL = `SELECT DISTINCT DATE_FORMAT(a.datadoregistro, '%d/%m/%Y') AS data_registro, COUNT(*) AS registros FROM dados_climaticos a WHERE a.esp_index='${data.esp_index}' GROUP BY data_registro ORDER BY data_registro ASC;`;
+                                    SQL = `SELECT DISTINCT DATE_FORMAT(a.datadoregistro, '%d/%m/%Y') AS data_registro,
+                                            COUNT(*) AS registros,
+                                            AVG(a.temperatura) AS media_temperatura,
+                                            AVG(a.luminosidade) AS media_luminosidade,
+                                            AVG(a.pressao) AS media_pressao,
+                                            AVG(a.umidade) AS media_umidade,
+                                            AVG(a.chuva) AS media_chuva,
+                                            MIN(a.temperatura) AS minimo_temperatura,
+                                            MAX(a.temperatura) AS maximo_temperatura,
+                                            (SELECT b.datadoregistro FROM dados_climaticos b WHERE b.temperatura=MIN(a.temperatura) LIMIT 1) AS hora_mintemperatura,
+                                            (SELECT b.datadoregistro FROM dados_climaticos b WHERE b.temperatura=MAX(a.temperatura) LIMIT 1) AS hora_maxtemperatura,
+                                            (SELECT b.datadoregistro FROM dados_climaticos b WHERE b.luminosidade=MAX(a.luminosidade) LIMIT 1) AS hora_maxluminosidade,
+                                            (SELECT b.datadoregistro FROM dados_climaticos b WHERE b.luminosidade=MIN(a.luminosidade) LIMIT 1) AS hora_minluminosidade
+                                            FROM dados_climaticos a
+                                            WHERE a.esp_index='${data.esp_index}'
+                                            GROUP BY data_registro ORDER BY data_registro ASC`;
                         
                                     conexao.query(SQL, (err, sucess) => {
                                         if(err) {
