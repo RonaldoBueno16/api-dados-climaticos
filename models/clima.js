@@ -353,6 +353,106 @@ class clima {
         }
     }
 
+    getEspDay(data, res) {
+        const schema = {
+            type: 'object',
+            properties: {
+                user_id: {"type": "'string'"},
+                esp_index: {"type": "'string'"},
+                day: {"type": "'string'"},
+                month: {"type": "'string'"},
+                year: {"type": "'string'"}
+            },
+            required: ['user_id', 'esp_index', 'day', 'month', 'year']
+        };
+
+
+        if(v.validate(data, schema).valid) {
+            let SQL = `SELECT user_id FROM users WHERE user_id='${data.user_id}'`;
+            conexao.query(SQL, (err, sucess) => {
+                if(err) {
+                    res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o usuário."));
+                }
+                else {
+                    if(sucess.length) {
+                        SQL = `SELECT * FROM dados_climaticos WHERE esp_index='${data.esp_index}' AND datadoregistro BETWEEN '${data.year}-${data.month}-${data.day} 00:00:00' AND '${data.year}-${data.month}-${data.day} 23:59:59' ORDER BY datadoregistro ASC`
+                        conexao.query(SQL, (err, sucess) => {
+                            if(err) {
+                                res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o ESP."));
+                            }
+                            else {
+                                res.status(200).json(GenerateJsonSucess("Listando todos os ESP's do usuário", sucess));
+                            }
+                        });
+                    }  
+                    else {
+                        res.status(400).json(GenerateJsonError("auth_failure", "Sessão encerrada."));
+                    }
+                }
+            });
+        }
+        else {
+            let jsonRequest = [];
+            
+            Object.keys(schema.properties).forEach((item) => {
+                if(data[item] == undefined || typeof(data[item]) != schema.properties[item].type) {
+                    jsonRequest.push({'request': `${item} (${schema.properties[item].type})`});
+                }
+            })
+            
+            res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", params: jsonRequest}));
+        }
+    }
+
+    getRegAllDay(data, res) {
+        const schema = {
+            type: "object",
+            properties: {
+                user_id: {"type": "string"},
+                esp_index: {"type": "string"},
+            },
+            required: ['user_id', 'esp_index']
+        };
+
+        if(v.validate(data, schema).valid) {
+            let SQL = `SELECT user_id FROM users WHERE user_id='${data.user_id}'`;
+
+            conexao.query(SQL, (err, sucess) => {
+                if(err) {
+                    res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o usuário."));
+                }
+                else {
+                    if(sucess.length == 0) {
+                        res.status(400).json(GenerateJsonError("auth_failure", "Sessão encerrada."));
+                    }
+                    else {
+                        SQL = `SELECT DISTINCT DATE_FORMAT(a.datadoregistro, '%d/%m/%Y') AS data_registro, COUNT(*) AS registros FROM dados_climaticos a WHERE esp_index='${data.esp_index}' GROUP BY data_registro ORDER BY data_registro ASC`;
+                        
+                        conexao.query(SQL, (err, sucess) => {
+                            if(err) {
+                                res.status(400).json(GenerateJsonError("sql_error", err));
+                            }
+                            else {
+                                res.status(200).json(GenerateJsonSucess("Listando todas as datas e quantidade de registros", sucess));
+                            }
+                        })
+                    }
+                }
+            })
+        }
+        else {
+            let jsonRequest = [];
+            
+            Object.keys(schema.properties).forEach((item) => {
+                if(data[item] == undefined || typeof(data[item]) != schema.properties[item].type) {
+                    jsonRequest.push({'request': `${item} (${schema.properties[item].type})`});
+                }
+            })
+            
+            res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", params: jsonRequest}));
+        }
+    }
+
     getAllESP(data, res) {
         const schema = {
             type: "object",

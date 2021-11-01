@@ -32,6 +32,17 @@ module.exports = app => {
 
         clima.getAllESP(req.params, res);
     });
+    app.get('/user/esp/get/day/', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+
+        clima.getEspDay(req.query, res);
+    });
+    app.get('/user/esp/get/regallday', (req, res, next) => {
+
+        res.header("Access-Control-Allow-Origin", "*");
+
+        clima.getRegAllDay(req.query, res);
+    })
 
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
         res.header("Access-Control-Allow-Origin", "*");
