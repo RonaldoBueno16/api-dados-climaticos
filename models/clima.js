@@ -326,7 +326,7 @@ class clima {
                                         }
                                     }
                                     else {
-                                        SQL = `UPDATE lista_esps SET esp_owner=NULL WHERE esp_index=${data.esp_index}`;
+                                        SQL = `UPDATE lista_esps SET esp_owner=NULL, esp_latitude=NULL, esp_longitude=NULL, esp_vinculacao=NULL WHERE esp_index=${data.esp_index}`;
 
                                         conexao.query(SQL, (err, sucess) => {
                                             if(err) {
