@@ -71,6 +71,9 @@ module.exports = app => {
 }
 
 function verifyJWT(req, res, next) {
+
+    console.log(req.headers);
+    
     const token = req.headers['x-acess-token'];
     if(!token)
         return res.status(401).json({auth: false, message: "Nenhum token de autenticação"});
