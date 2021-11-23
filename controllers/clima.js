@@ -29,10 +29,10 @@ module.exports = app => {
         
         clima.desvincularEsp(req.query, res);
     });
-    app.get('/user/esp/getall/:user_id', (req, res, next) => {
+    app.get('/user/esp/getall/', verifyJWT, (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
-
-        clima.getAllESP(req.params, res);
+        
+        clima.getAllESP(req.params, res, req.userid);
     });
     app.get('/user/esp/get/day/', (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
@@ -80,7 +80,7 @@ function verifyJWT(req, res, next) {
             return res.status(500).json({auth: false, message: "Falha ao autenticar"});
         }
 
-        console.log(decoded);
+        req.userid = decoded.userid;
         next();
     })
 }

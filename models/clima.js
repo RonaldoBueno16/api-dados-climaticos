@@ -536,28 +536,19 @@ class clima {
         }
     }
 
-    getAllESP(data, res) {
-        const schema = {
-            type: "object",
-            properties: {
-                user_id: {"type": "string"}
-            },
-            required: ['user_id']
-        };
+    getAllESP(data, res, userid) {
+        let SQL = `SELECT user_id FROM users WHERE user_id='${userid}'`;
 
-        if(v.validate(data, schema).valid) {
-            let SQL = `SELECT user_id FROM users WHERE user_id='${data.user_id}'`;
-
-            conexao.query(SQL, (err, sucess) => {
-                if(err) {
+        conexao.query(SQL, (err, sucess) => {
+            if(err) {
                     res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o usuário."));
-                }
-                else {
+            }
+            else {
                     if(sucess.length == 0) {
                         res.status(400).json(GenerateJsonError("auth_failure", "Sessão encerrada."));
                     }
                     else {
-                        SQL = `SELECT esp_index, esp_latitude, esp_longitude, esp_vinculacao, esp_nome FROM lista_esps WHERE esp_owner = '${data.user_id}'`;
+                        SQL = `SELECT esp_index, esp_latitude, esp_longitude, esp_vinculacao, esp_nome FROM lista_esps WHERE esp_owner = '${userid}'`;
                         
                         conexao.query(SQL, (err, sucess) => {
                             if(err) {
@@ -568,20 +559,8 @@ class clima {
                             }
                         })
                     }
-                }
-            })
-        }
-        else {
-            let jsonRequest = [];
-            
-            Object.keys(schema.properties).forEach((item) => {
-                if(data[item] == undefined || typeof(data[item]) != schema.properties[item].type) {
-                    jsonRequest.push({'request': `${item} (${schema.properties[item].type})`});
-                }
-            })
-            
-            res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", params: jsonRequest}));
-        }
+            }
+        })
     }
     
     
