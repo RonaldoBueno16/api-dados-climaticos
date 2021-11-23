@@ -17,6 +17,12 @@ module.exports = app => {
 
         clima.authUser(data, res);
     })
+    app.get('/user/authtoken/:token', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+
+        const token = req.params.token;
+        clima.authToken(token, res);
+    })
     app.post('/user/esp/vincular', verifyJWT, (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
 
@@ -71,8 +77,6 @@ module.exports = app => {
 }
 
 function verifyJWT(req, res, next) {
-    console.log('Verificando auth');
-    
     const token = req.headers['x-acess-token'];
     if(!token) {
         console.log(req.headers);           

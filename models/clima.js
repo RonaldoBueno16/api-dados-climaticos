@@ -317,6 +317,20 @@ class clima {
             res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", params: jsonRequest}));
         }
     }
+
+    authToken(token, res) {
+        if(!token) {
+            return res.status(401).json({auth: false, message: "Nenhum token de autenticação"});
+        }
+
+        jwt.verify(token, process.env.SECRET, (err, decoded) => {
+            if(err) {
+                return res.status(500).json({auth: false, message: "Falha ao autenticar"});
+            }
+    
+            res.status(200).json({auth: true});
+        })
+    }
     
     desvincularEsp(data, res, userid) {
         const schema = {
@@ -357,7 +371,6 @@ class clima {
                                     }
                                     else {
                                         SQL = `UPDATE lista_esps SET esp_owner=NULL, esp_latitude=NULL, esp_longitude=NULL, esp_vinculacao=NULL WHERE esp_index=${data.esp_index}`;
-                                        console.log(SQL);
 
                                         conexao.query(SQL, (err, sucess) => {
                                             if(err) {
