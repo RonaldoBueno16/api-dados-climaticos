@@ -450,18 +450,17 @@ class clima {
         }
     }
 
-    getRegAllDay(data, res) {
+    getRegAllDay(data, res, userid) {
         const schema = {
             type: "object",
             properties: {
-                user_id: {"type": "string"},
                 esp_index: {"type": "string"},
             },
-            required: ['user_id', 'esp_index']
+            required: ['esp_index']
         };
 
         if(v.validate(data, schema).valid) {
-            let SQL = `SELECT user_id FROM users WHERE user_id='${data.user_id}'`;
+            let SQL = `SELECT user_id FROM users WHERE user_id='${userid}'`;
 
             conexao.query(SQL, (err, sucess) => {
                 if(err) {
@@ -473,6 +472,7 @@ class clima {
                     }
                     else {
                         SQL = `SELECT esp_latitude, esp_longitude FROM lista_esps WHERE esp_index=${data.esp_index}`
+                        console.log(SQL);
                         conexao.query(SQL, (err, sucess) => {
                             if(err) {
                                 res.status(400).json(GenerateJsonError("sql_error", "Não foi possível encontrar o ESP"));

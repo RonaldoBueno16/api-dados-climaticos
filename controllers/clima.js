@@ -39,11 +39,11 @@ module.exports = app => {
 
         clima.getEspDay(req.query, res);
     });
-    app.get('/user/esp/get/regallday', (req, res, next) => {
+    app.get('/user/esp/get/regallday', verifyJWT, (req, res, next) => {
 
         res.header("Access-Control-Allow-Origin", "*");
 
-        clima.getRegAllDay(req.query, res);
+        clima.getRegAllDay(req.query, res, req.userid);
     })
 
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
