@@ -17,17 +17,17 @@ module.exports = app => {
 
         clima.authUser(data, res);
     })
-    app.post('/user/esp/vincular', (req, res, next) => {
+    app.post('/user/esp/vincular', verifyJWT, (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
 
         const data = req.query;
 
-        clima.vincularEsp(data, res);
+        clima.vincularEsp(data, res, req.userid);
     })
-    app.delete('/user/esp/desvincular/', (req, res, next) => {
+    app.delete('/user/esp/desvincular/', verifyJWT, (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
         
-        clima.desvincularEsp(req.query, res);
+        clima.desvincularEsp(req.query, res, req.userid);
     });
     app.get('/user/esp/getall/', verifyJWT, (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");

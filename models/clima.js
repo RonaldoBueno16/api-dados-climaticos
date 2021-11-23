@@ -238,20 +238,19 @@ class clima {
         }
     }
 
-    vincularEsp(data, res) {
+    vincularEsp(data, res, userid) {
         const schema = {
             type: "object",
             properties: {
-                user_id: {"type": "string"},
                 esp_key: {"type": "string"},
                 latitude: {"type": "float"},
                 longitude: {"type": "float"},
             },
-            required: ['user_id', 'esp_key', 'latitude', 'longitude']
+            required: ['esp_key', 'latitude', 'longitude']
         };
 
         if(v.validate(data, schema).valid) {
-            let SQL = `SELECT u.user_id,u.user_name,u.user_login FROM users u WHERE u.user_id='${data.user_id}'`;
+            let SQL = `SELECT u.user_id,u.user_name,u.user_login FROM users u WHERE u.user_id='${userid}'`;
 
             conexao.query(SQL, (err, sucess) => {
                 if(err) {
@@ -319,19 +318,18 @@ class clima {
         }
     }
     
-    desvincularEsp(data, res) {
+    desvincularEsp(data, res, userid) {
         const schema = {
             type: "object",
             properties: {
-                user_id: {"type": "string"},
                 esp_index: {"type": "string"}
             },
-            required: ['user_id', 'esp_index']
+            required: ['esp_index']
         };
 
         
         if(v.validate(data, schema).valid) {
-            let SQL = `SELECT user_id FROM users WHERE user_id='${data.user_id}'`;
+            let SQL = `SELECT user_id FROM users WHERE user_id='${userid}'`;
 
             conexao.query(SQL, (err, sucess) => {
                 if(err) {
@@ -359,6 +357,7 @@ class clima {
                                     }
                                     else {
                                         SQL = `UPDATE lista_esps SET esp_owner=NULL, esp_latitude=NULL, esp_longitude=NULL, esp_vinculacao=NULL WHERE esp_index=${data.esp_index}`;
+                                        console.log(SQL);
 
                                         conexao.query(SQL, (err, sucess) => {
                                             if(err) {
