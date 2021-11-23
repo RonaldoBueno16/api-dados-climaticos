@@ -328,7 +328,47 @@ class clima {
                 return res.status(500).json({auth: false, message: "Falha ao autenticar"});
             }
     
-            res.status(200).json({auth: true});
+            const SQL = `SELECT a.user_id,
+                        a.user_name,
+                        a.user_sobrenome,
+                        a.user_nascimento,
+                        b.user_rua,
+                        b.user_cep,
+                        b.user_bairro,
+                        b.user_cidade,
+                        b.user_uf
+                        FROM users a
+                        INNER JOIN address b ON a.user_id=b.user_id
+                        WHERE 
+                        a.user_id=${decoded.userid}`
+                        
+            conexao.query(SQL, (err, sucess) => {
+                if(err) {
+                    res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
+                }
+                else {
+                    console.log(sucess);
+                    
+                    const response = {
+                        auth: true,
+                        token: token,
+                        data: {
+                            info: {
+                                user_name: sucess[0].user_name,
+                                user_sobrenome: sucess[0].user_sobrenome,
+                                user_nascimento: sucess[0].user_nascimento,
+                            },
+                            address: {
+                                user_bairro: sucess[0].user_bairro,
+                                user_cep: sucess[0].user_cep,
+                                user_cidade: sucess[0].user_cidade,
+                                user_uf: sucess[0].user_uf,
+                            },
+                        }
+                    }          
+                    res.status(200).json(response);
+                }
+            })
         })
     }
     
