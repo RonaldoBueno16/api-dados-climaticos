@@ -71,6 +71,7 @@ module.exports = app => {
 }
 
 function verifyJWT(req, res, next) {
+    console.log('Verificando auth');
     
     const token = req.headers['x-acess-token'];
     if(!token) {
