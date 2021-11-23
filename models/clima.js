@@ -113,7 +113,7 @@ class clima {
                     res.status(501).json(GenerateJsonError("invalid_json", "Não foi possível inserir o registro no banco (SQL)"));
                 }
                 else {
-                    if(sucess.length == 0) {
+                    if(sucess.length == 0) {                        
                         const response = {
                             auth: false,
                             token: null
@@ -126,11 +126,25 @@ class clima {
 
                         const token = jwt.sign({userid}, process.env.SECRET);
 
+                        console.log(sucess);
+                        
                         const response = {
                             auth: true,
-                            token: token
-                        }
-                        
+                            token: token,
+                            data: {
+                                info: {
+                                    user_name: sucess[0].user_name,
+                                    user_sobrenome: sucess[0].user_sobrenome,
+                                    user_nascimento: sucess[0].user_nascimento,
+                                },
+                                address: {
+                                    user_bairro: sucess[0].user_bairro,
+                                    user_cep: sucess[0].user_cep,
+                                    user_cidade: sucess[0].user_cidade,
+                                    user_uf: sucess[0].user_uf,
+                                },
+                            }
+                        }          
                         res.status(200).json(response);
                     }
                 }
