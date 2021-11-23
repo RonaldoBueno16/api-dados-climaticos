@@ -4,8 +4,12 @@ const moment = require("moment");
 const conexao = require("../infraestrutura/conexao")
 const {Validator} = require("jsonschema");
 const { json } = require("body-parser");
+const { hash } = require("bcrypt");
 
 const v = new Validator();
+
+require("dotenv-safe").config();
+const jwt = require('jsonwebtoken');
 
 class clima {
     registerUser(data, res) {
@@ -98,10 +102,24 @@ class clima {
                 }
                 else {
                     if(sucess.length == 0) {
-                        res.status(200).json(GenerateJsonError("auth_failure", "Não foi encontrado nenhum usuário com essas credenciais."));
+                        const response = {
+                            auth: false,
+                            token: null
+                        };
+                        res.status(200).json(response);
+                        // res.status(200).json(GenerateJsonError("auth_failure", "Não foi encontrado nenhum usuário com essas credenciais."));
                     }
                     else {
-                        res.status(200).json(GenerateJsonSucess("OK", sucess));
+                        const userid = sucess[0].user_id;
+
+                        const token = jwt.sign({userid}, process.env.SECRET);
+
+                        const response = {
+                            auth: true,
+                            token: token
+                        }
+                        
+                        res.status(200).json(response);
                     }
                 }
             });
@@ -269,3 +287,4 @@ function GenerateJsonSucess(_message, _data) {
     }
     return json_;
 }
+

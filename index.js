@@ -2,6 +2,7 @@ const customExpress = require("./config/customExpress");
 let conexao = require("./infraestrutura/conexao");
 const tabelas = require("./infraestrutura/tabelas");
 const cors = require("cors");
+const bcrypt = require('bcrypt');
 
 const porta = process.env.PORT || 8080;
 
@@ -20,8 +21,17 @@ conexao.getConnection((err, connection) => {
         const app = customExpress();
         app.use(cors());
         
-        app.listen(porta, () => {
+        app.listen(porta, async () => {
+
+            const senha = await HashPassword("123123");
+            console.log(senha);
+            
             console.log("|| Servidor rodando na porta " + porta + " com as configurações CORS ativadas");
         });
     }
 })
+
+async function HashPassword(password) {
+    const custoHash = 12;
+    return bcrypt.hash(password, custoHash);
+}

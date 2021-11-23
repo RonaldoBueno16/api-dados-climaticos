@@ -1,5 +1,7 @@
 const clima = require("../models/clima");
 
+const jwt = require('jsonwebtoken');
+
 module.exports = app => {
     app.post('/user/subscription', (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
@@ -32,7 +34,7 @@ module.exports = app => {
         res.header("Access-Control-Allow-Origin", "*");
         clima.coletarDadosESP(req.query.auth, res);
     })
-    app.get('/coletardadosmax', (req, res, next) => { //A REVISAR
+    app.get('/coletardadosmax', verifyJWT, (req, res, next) => { //A REVISAR
         res.header("Access-Control-Allow-Origin", "*");
         clima.coletarDadosMax(res);
     })
@@ -44,5 +46,19 @@ module.exports = app => {
         res.header("Access-Control-Allow-Origin", "*");
         res.json({status: "OK"})
     })
+}
+
+function verifyJWT(req, res, next) {
+    const token = req.headers['x-acess-token'];
+    if(!token)
+        return res.status(401).json({auth: false, message: "Nenhum token de autenticação"});
     
+    jwt.verify(token, process.env.SECRET, (err, decoded) => {
+        if(err) {
+            return res.status(500).json({auth: false, message: "Falha ao autenticar"});
+        }
+
+        console.log(decoded);
+        next();
+    })
 }
