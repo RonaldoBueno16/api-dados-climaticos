@@ -17,18 +17,40 @@ module.exports = app => {
 
         clima.authUser(data, res);
     })
+    app.post('/user/esp/vincular', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+
+        const data = req.query;
+
+        clima.vincularEsp(data, res);
+    })
+    app.delete('/user/esp/desvincular/', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+        
+        clima.desvincularEsp(req.query, res);
+    });
+    app.get('/user/esp/getall/:user_id', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+
+        clima.getAllESP(req.params, res);
+    });
+    app.get('/user/esp/get/day/', (req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "*");
+
+        clima.getEspDay(req.query, res);
+    });
+    app.get('/user/esp/get/regallday', (req, res, next) => {
+
+        res.header("Access-Control-Allow-Origin", "*");
+
+        clima.getRegAllDay(req.query, res);
+    })
 
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
         res.header("Access-Control-Allow-Origin", "*");
         const dados = req.body;
 
         clima.adicionar(dados, res);
-    })
-    app.post("/vincularesp", (req, res, next) => {
-        res.header("Access-Control-Allow-Origin", "*");
-        const dados = req.body;
-
-        clima.vincularEsp(dados, res);
     })
     app.get('/coletardados', (req, res, next) => { //OK REVISADO
         res.header("Access-Control-Allow-Origin", "*");
