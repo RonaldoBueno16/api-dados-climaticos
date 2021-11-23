@@ -3,7 +3,7 @@ let conexao = require("./infraestrutura/conexao");
 const tabelas = require("./infraestrutura/tabelas");
 const cors = require("cors");
 
-const porta = process.env.PORT || 8080;
+const porta = process.env.PORT || 3000;
 
 conexao.getConnection((err, connection) => {
     conexao = connection;
