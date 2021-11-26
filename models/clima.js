@@ -164,6 +164,21 @@ class clima {
         }
     }
     
+    getCultivos(res) {
+        const SQL = "SELECT * FROM cultivos";
+        conexao.query(SQL, (erro, sucess) => {
+            if(erro) {
+                res.status(500).json(GenerateJsonError("sql_error", "falha ao consultar o banco de dados"));
+            }
+            else {
+                const response = {
+                    data: sucess
+                }
+                res.status(200).json(response);
+            }
+        })   
+    }
+    
     adicionar(objeto, res) {
         const validacoes = [
             {//Verificar autenticação

@@ -51,7 +51,9 @@ module.exports = app => {
 
         clima.getRegAllDay(req.query, res, req.userid);
     })
-
+    app.get('/cultivo/get/all', verifyJWT, (req, res, next) => {
+        clima.getCultivos(res);
+    })
     app.post('/inserirdados', (req, res, next) => { //OK REVISADO
         res.header("Access-Control-Allow-Origin", "*");
         const dados = req.body;
