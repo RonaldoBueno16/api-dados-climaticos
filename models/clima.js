@@ -345,6 +345,7 @@ class clima {
 
         if(v.validate(data, schema).valid) {
             const SQL = `UPDATE lista_esps SET cultivos_id=${data.cultivo_id} WHERE esp_index=${data.esp_index}`;
+            console.log(SQL);
             conexao.query(SQL, (err, sucess) => {
                 if(err) {
                     res.status(500).json(GenerateJsonError("sql_error", "Não foi possível vincular o cultivo."));
