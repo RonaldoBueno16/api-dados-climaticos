@@ -333,6 +333,55 @@ class clima {
         }
     }
 
+    vincularCultivo(data, res) {
+        const schema = {
+            type: "object",
+            properties: {
+                esp_index: {"type": "string"},
+                cultivo_id: {"type": "string"},
+            },
+            required: ['esp_index', 'cultivo_id']
+        };
+
+        if(v.validate(data, schema).valid) {
+            const SQL = `UPDATE lista_esps SET cultivos_id=${data.cultivo_id} WHERE esp_index=${data.esp_index}`;
+            conexao.query(SQL, (err, sucess) => {
+                if(err) {
+                    res.status(500).json(GenerateJsonError("sql_error", "Não foi possível vincular o cultivo."));
+                }
+                else {
+                    let response;
+                    if(sucess.affectedRows) {
+                        response = {
+                            sucess: true,
+                            message: "Cultivo atualizado com sucesso!",
+                            data: sucess
+                        }
+                    }
+                    else {
+                        response = {
+                            sucess: true,
+                            message: "Nenhum ESP encontrado",
+                            data: sucess
+                        }
+                    }
+                    res.status(200).json(GenerateJsonSucess("data", sucess));
+                }
+            })
+        }
+        else {
+            let jsonRequest = [];
+            
+            Object.keys(schema.properties).forEach((item) => {
+                if(data[item] == undefined || typeof(data[item]) != schema.properties[item].type) {
+                    jsonRequest.push({'request': `${item} (${schema.properties[item].type})`});
+                }
+            })
+            
+            res.status(400).json(GenerateJsonError("invalid_json", {text: "Parametros insuficientes, listando abaixo [param (type)]: ", params: jsonRequest}));
+        }
+    }
+
     authToken(token, res) {
         if(!token) {
             return res.status(401).json({auth: false, message: "Nenhum token de autenticação"});

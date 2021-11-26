@@ -30,6 +30,11 @@ module.exports = app => {
 
         clima.vincularEsp(data, res, req.userid);
     })
+    app.post('/user/esp/cultivo/vincular/', verifyJWT, (req, res, next) => {
+        const data = req.query;
+
+        clima.vincularCultivo(data, res);
+    });
     app.delete('/user/esp/desvincular/', verifyJWT, (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
         
