@@ -343,6 +343,8 @@ class clima {
         };
 
 
+        console.log(data);
+        
         if(v.validate(data, schema).valid) {
             const SQL = `UPDATE lista_esps SET cultivos_id=NULL WHERE esp_index=${data.esp_index}`;
             conexao.query(SQL, (err, sucess) => {
@@ -618,6 +620,19 @@ class clima {
         }
     }
 
+    getUserCultivos(res, userid) {
+        let SQL = `SELECT e.esp_index, e.esp_nome, c.* FROM lista_esps e INNER JOIN cultivos c ON e.cultivos_id=c.id WHERE e.esp_owner='${userid}'`;
+        conexao.query(SQL, (err, sucess) => {
+            if(err) {
+                res.status(500).json(GenerateJsonError("sql_error", "Falha ao encontrar o usuário."));
+            }
+            else {
+                
+                res.status(200).json(GenerateJsonSucess("data", sucess));
+            }
+        });
+    }
+    
     getRegAllDay(data, res, userid) {
         const schema = {
             type: "object",

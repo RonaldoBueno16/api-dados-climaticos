@@ -61,6 +61,10 @@ module.exports = app => {
 
         clima.getRegAllDay(req.query, res, req.userid);
     })
+    app.get('/user/cultivo/get/all', verifyJWT, (req, res, next) => {
+
+        clima.getUserCultivos(res, req.userid);
+    })
     app.get('/cultivo/get/all', verifyJWT, (req, res, next) => {
         clima.getCultivos(res);
     })
