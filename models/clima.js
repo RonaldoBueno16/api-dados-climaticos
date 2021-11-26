@@ -348,6 +348,7 @@ class clima {
             conexao.query(SQL, (err, sucess) => {
                 if(err) {
                     res.status(500).json(GenerateJsonError("sql_error", "Não foi possível vincular o cultivo."));
+                    console.log(err);
                 }
                 else {
                     let response;
