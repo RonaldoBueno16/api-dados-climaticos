@@ -615,7 +615,7 @@ class clima {
                         res.status(400).json(GenerateJsonError("auth_failure", "Sessão encerrada."));
                     }
                     else {
-                        SQL = `SELECT esp_index, esp_latitude, esp_longitude, esp_vinculacao, esp_nome FROM lista_esps WHERE esp_owner = '${userid}'`;
+                        SQL = `SELECT esp_index, esp_latitude, esp_longitude, esp_vinculacao, esp_nome, cultivos_id, (SELECT b.nome FROM cultivos b WHERE b.id=a.cultivos_id) as nome_cultivo FROM lista_esps a WHERE esp_owner = '${userid}'`;
                         
                         conexao.query(SQL, (err, sucess) => {
                             if(err) {
