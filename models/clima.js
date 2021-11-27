@@ -680,7 +680,7 @@ class clima {
                                             (SELECT DATE_FORMAT(b.datadoregistro, '%H:%m:%s') FROM dados_climaticos b WHERE b.luminosidade=MIN(a.luminosidade) LIMIT 1) AS hora_minluminosidade
                                             FROM dados_climaticos a
                                             WHERE a.esp_index='${data.esp_index}'
-                                            GROUP BY data_registro ORDER BY data_registro ASC`;
+                                            GROUP BY data_registro ORDER BY data_registro ASC LIMIT 7`;
                         
                                     conexao.query(SQL, (err, sucess) => {
                                         if(err) {
