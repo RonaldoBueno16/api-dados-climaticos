@@ -665,7 +665,7 @@ class clima {
                                     const latitude = sucess[0].esp_latitude;
                                     const longitude = sucess[0].esp_longitude;
 
-                                    SQL = `SELECT DISTINCT DATE_FORMAT(a.datadoregistro, '%d/%m/%Y') AS data_registro,
+                                    SQL = `SELECT DISTINCT a.datadoregistro AS data_registro,
                                             COUNT(*) AS registros,
                                             AVG(a.temperatura) AS media_temperatura,
                                             AVG(a.luminosidade) AS media_luminosidade,
